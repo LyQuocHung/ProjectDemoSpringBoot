@@ -22,7 +22,13 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public Product addProduct(AddProductRequest request) {
+    public Product addProduct(AddProductRequest request) throws IllegalAccessException {
+        if(request == null){
+            throw new IllegalAccessException("Request cannot be null");
+        }
+        if(request.getCategory() == null || request.getCategory().getName() == null){
+            throw new IllegalAccessException("Category cannot be null");
+        }
         Category category = getOrCreateCategory(request.getCategory().getName());
         request.setCategory(category);
         //create new product

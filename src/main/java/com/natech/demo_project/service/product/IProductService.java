@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IProductService {
 
-    Product addProduct(AddProductRequest request);
+    Product addProduct(AddProductRequest request) throws IllegalAccessException;
 
     Product getProductById(Long id);
 
