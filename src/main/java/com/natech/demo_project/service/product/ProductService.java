@@ -23,10 +23,10 @@ public class ProductService implements IProductService {
 
     @Override
     public Product addProduct(AddProductRequest request) throws IllegalAccessException {
-        if(request == null){
+        if (request == null) {
             throw new IllegalAccessException("Request cannot be null");
         }
-        if(request.getCategory() == null || request.getCategory().getName() == null){
+        if (request.getCategory() == null || request.getCategory().getName() == null) {
             throw new IllegalAccessException("Category cannot be null");
         }
         Category category = getOrCreateCategory(request.getCategory().getName());
@@ -65,14 +65,16 @@ public class ProductService implements IProductService {
     public void deleteProduct(Long id) {
         productRepository.findById(id)
                 .ifPresentOrElse(productRepository::delete,
-                        () -> new ProductNotFoundException("Product not found!"));
+                        () -> {
+                            throw new ProductNotFoundException("Product not found!");
+                        });
     }
 
     @Override
-    public Product updateProduct(ProductUpdateRequest  request, Long productId) {
+    public Product updateProduct(ProductUpdateRequest request, Long productId) {
         return productRepository.findById(productId)
-                .map(existingProduct -> updateExistingProduct(existingProduct,request))
-                .map(productRepository :: save)
+                .map(existingProduct -> updateExistingProduct(existingProduct, request))
+                .map(productRepository::save)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found!"));
     }
 
