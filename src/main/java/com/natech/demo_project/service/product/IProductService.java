@@ -1,5 +1,6 @@
 package com.natech.demo_project.service.product;
 
+import com.natech.demo_project.dto.ProductDto;
 import com.natech.demo_project.model.Product;
 import com.natech.demo_project.request.AddProductRequest;
 import com.natech.demo_project.request.ProductUpdateRequest;
@@ -29,4 +30,8 @@ public interface IProductService {
     List<Product> getProductsByNameAndBrand(String brand, String name);
 
     Long countProductsByBrandAndName(String brand, String name);
+
+    List<ProductDto> toConvertedProduct(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }

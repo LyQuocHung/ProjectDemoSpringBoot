@@ -1,12 +1,17 @@
 package com.natech.demo_project.service.product;
 
+import com.natech.demo_project.dto.ImageDto;
+import com.natech.demo_project.dto.ProductDto;
 import com.natech.demo_project.exceptions.ProductNotFoundException;
 import com.natech.demo_project.model.Category;
+import com.natech.demo_project.model.Image;
 import com.natech.demo_project.model.Product;
 import com.natech.demo_project.repository.CategoryRepository;
+import com.natech.demo_project.repository.ImageRepository;
 import com.natech.demo_project.repository.ProductRepository;
 import com.natech.demo_project.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import com.natech.demo_project.request.AddProductRequest;
 
@@ -19,6 +24,8 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
 
     @Override
@@ -127,5 +134,22 @@ public class ProductService implements IProductService {
         return productRepository.countProductByBrandAndName(brand, name);
     }
 
-
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductById(product.getId());
+        List<ImageDto> imageDtos  = images
+                .stream()
+                .map(image -> modelMapper.map(image, ImageDto.class))
+                .toList();
+        productDto.setIamges(imageDtos);
+        return productDto;
+    }
+    @Override
+    public List<ProductDto> toConvertedProduct(List<Product> products){
+        return products
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
 }
